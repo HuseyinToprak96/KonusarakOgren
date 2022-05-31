@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="width:50%;margin-left:25%;margin-top:25%;">
+    <div style="display:grid;grid-template-columns:50% 50%;">
+        <div>
+            <button class="btnLog" onclick="parent.location='/Login/Teacher'">
+                LOGIN TEACHER
+            </button>
+        </div>
+        <div>
+            <button class="btnLog" onclick="parent.location='/Login/Student'">
+                LOGIN STUDENT
+            </button>
+        </div>
+    </div>
+    <form asp-action="Visitor" method="post" asp-controller="Login">
+        <div>
+            <table class="table" >
+
+                <tr>
+                    <th colspan="2">
+                        <h1 style="text-align:center">LOGIN VISITOR</h1>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Username:
+                    </th>
+                    <td>
+                        <input type="text" name="username" class="form-control" placeholder="Enter username" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Password:
+                    </th>
+                    <td>
+                        <input type="password" name="password" class="form-control" placeholder="Enter password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align:center">
+                        <input type="submit" class="btn btn-outline-secondary" value="LOGIN" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">@TempData["error"]</td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<style>
+    .btnLog {
+        height:100%;
+        width:100%;
+        background-color:lightblue;
+        font-weight:bold;
+    }
+</style>

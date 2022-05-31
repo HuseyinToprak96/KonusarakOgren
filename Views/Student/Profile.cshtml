@@ -1,0 +1,77 @@
+﻿@model KonusarakOgren.Dtos.StudentDetailDto
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Profile</h1>
+
+<div class="container mt-3">
+    <h2>@Model.Name @Model.LastName</h2>
+    <br>
+    <!-- Nav pills -->
+    <ul class="nav nav-pills" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="pill" href="#home">Teacher Information</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#menu1">Upcoming Exams</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#menu2">Results of Exam</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div id="home" class="container tab-pane active">
+            <br>
+            <h3>Teacher Information</h3>
+            <table class="table" style="width:40%">
+                
+                <tr>
+                    <th>Adı Soyadı</th>
+                    <td>@Model.Teacher.Name @Model.Teacher.LastName</td>
+                </tr>
+            </table>
+        </div>
+        <div id="menu1" class="container tab-pane fade">
+            <br>
+            
+             <table class="table" style="width:40%">
+                 <tr>
+                     <th>Title</th>
+                     <th>Date Time</th>
+                 </tr>
+                 @foreach (var item in Model.Exams)
+                 {
+                     <tr><td>@item.ExamTitle</td>
+                 <td>@item.dateTime</td></tr>
+                     
+                 }
+             </table>
+        </div>
+        <div id="menu2" class="container tab-pane fade">
+            <br>
+            
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Date Time</th>
+                    <th>True</th>
+                    <th>False</th>
+                    <th>Total Point</th>
+                </tr>
+                @foreach (var item in Model.studentExamDtos)
+                {
+                <tr>
+                    <td>@item.examDto.ExamTitle</td>
+                    <td>@item.examDto.dateTime</td>
+                    <td>@item.TotalTrue</td>
+                    <td>@item.TotalFalse</td>
+                    <td>@item.Point</td>
+                </tr> }
+            </table>
+        </div>
+    </div>
+</div>

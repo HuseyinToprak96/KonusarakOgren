@@ -1,0 +1,118 @@
+﻿@*@model KonuşarakOgren.Models.Exam*@
+@model KonusarakOgren.Models.Question[]
+@{
+    ViewData["Title"] = "GetExam";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Model.Length
+<table>
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+
+    @for(int i=0; i<Model.Length;i++)
+    {
+        <tr>
+            <td>
+
+                @Model[i].question
+            </td>
+        </tr>
+    }
+</table>
+
+
+
+
+<div class="container">
+
+
+    <form id="frm" asp-action="GetExam" asp-controller="Exam" method="get">
+
+       
+        <div id="questions">
+
+
+
+
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="left container">
+                    <div>
+                        <table>
+                            <tr>
+                                <td colspan="2">
+             @Model[i].question"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>A</strong>
+                                    @Model[i].A
+                                </td>
+                                <td>
+                                    <strong>B</strong>
+                                    @Model[i].B
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>C</strong> 
+                                    @Model[i].C
+                                </td>
+                                <td>
+                                    <strong>D</strong>
+                                    @Model[i].D
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center">
+                                    @Model[i].Answer
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            }
+</div></form></div>
+
+
+
+<style>
+    #paragraphs {
+        border: 3px solid black;
+        width: 100%;
+        min-height: 130px;
+        height: max-content;
+        font-size: 12pt;
+        margin: 30px auto;
+    }
+
+    #questions {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+
+    .left {
+        display: grid;
+        grid-template-rows: 50% 50%;
+        margin-top: 50px
+    }
+
+    .btnCreateExam {
+        width: 40%;
+        height: 60px;
+        margin-top: 20px;
+        border: 0px;
+        background-color: whitesmoke;
+        color: black;
+        font-weight: bold;
+    }
+
+        .btnCreateExam:hover {
+            background-color: cornflowerblue;
+        }
+</style>

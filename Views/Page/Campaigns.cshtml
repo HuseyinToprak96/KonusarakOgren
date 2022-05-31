@@ -1,0 +1,22 @@
+﻿@using KonusarakOgren.ViewModel
+@{
+    ViewData["Title"] = "Campaigns";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Campaigns</h1>
+
+<div class="container">
+    <div class="row">
+
+       @foreach (var item in (List<Vm_Campaign>)TempData["Campaigns"])
+	{
+            <div class="col-sm-2" style="margin:5px 5px;height:190px;width:190px;">
+                <img src="~/Campaigns/@item.Image" height="190" width="190"/>
+            </div>
+        }
+
+    </div>
+
+</div>
+

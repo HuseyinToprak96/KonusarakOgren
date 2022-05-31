@@ -1,0 +1,13 @@
+﻿@model List<KonusarakOgren.Models.Visitor>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>List</h1>
+
+@if (Model != null) {
+@foreach (var item in Model)
+{
+    @item.Name
+}}

@@ -1,0 +1,180 @@
+﻿
+@using KonusarakOgren.Models
+@{
+    ViewData["Title"] = "Create Exam";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+
+
+    <form id="frm" asp-action="CreateExam" asp-controller="Exam" method="post">
+
+        <select id="titles" name="exam.Indis" class="form-control">
+            @for (int i = 0; i < ViewBag.Titles.Length; i++)
+            {
+                <option value="@i">@ViewBag.Titles[i]</option>
+            }
+        </select>
+        <div id="paragraphs">
+            <p id="paragraph">
+                @ViewBag.Paragraphs[0]
+            </p>
+        </div>
+        <div>
+<input type="datetime-local" name="exam.dateTime"/>
+        </div>
+        <h2 style="text-align:center">English Questions</h2>
+        <div id="questions">
+
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="left container">
+                    <div>
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <input name="exam.Questions[@i].question" class="form-control" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>A</strong> @*<input type="text" value="@Model.A" class="form-control" />*@
+                                    <input id="A1" name="exam.Questions[@i].A" required class="form-control" />
+                                </td>
+                                <td>
+                                    <strong>B</strong> @*<input type="text" value="@Model.B" class="form-control" />*@
+                                    <input id="B1" name="exam.Questions[@i].B" required class="form-control" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>C</strong>  @*<input type="text" value="@Model.question1.C" class="form-control" />*@
+                                    <input id="C1" class="form-control" required name="exam.Questions[@i].C" />
+                                </td>
+                                <td>
+                                    <strong>D</strong>
+                                    <input id="D1" class="form-control" required name="exam.Questions[@i].D" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center;">
+                                    <select name="exam.Questions[@i].Answer"  style="width:20%;margin-left:40%" class="form-control" id="Ans1">
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+        <div style="width:100%;text-align:center">
+            <input type="submit" class="btnCreateExam" value="CREATE EXAM" />
+        </div>
+    </form>
+</div>
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#titles').change(function () {
+            var value = $(this).val();
+            if (value != -1) {
+                $.ajax({
+                    type: "Get",
+                    url: "/Exam/ExamSelected",
+                    data: "id=" + value,
+                    success: function (data) {
+                        $("#paragraph").text(data);
+                    },
+                    error: function () {
+                        console.log("hata");
+                    }
+
+                })
+            }
+            else {
+                $("#paragraph").text("");
+            }
+        });
+    });
+</script>
+
+<style>
+
+    #paragraphs {
+        border: 3px solid black;
+        width: 100%;
+        min-height: 130px;
+        height: max-content;
+        font-size: 12pt;
+        margin: 30px auto;
+    }
+
+    #questions {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+
+    .left {
+        display: grid;
+        grid-template-rows: 50% 50%;
+        margin-top: 80px
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 24pt;
+        text-align: center;
+    }
+
+    .btnGroup {
+        width: 45%;
+        display: grid;
+        grid-template-rows: 20% 20% 20% 20%;
+        margin: 50px auto;
+    }
+
+    .btnFinishExam {
+        width: 40%;
+        height: 60px;
+        margin-top: 60px;
+        border: 0px;
+        background-color: whitesmoke;
+        color: black;
+        font-weight: bold;
+    }
+
+        .btnFinishExam:hover {
+            background-color: chartreuse;
+        }
+
+    .btnOpt {
+        width: 100%;
+        background-color: white;
+        transition: all ease-in-out;
+    }
+
+
+    .btnCreateExam {
+        width: 40%;
+        height: 60px;
+        margin-top: 20px;
+        border: 0px;
+        background-color: whitesmoke;
+        color: black;
+        font-weight: bold;
+    }
+
+        .btnCreateExam:hover {
+            background-color: cornflowerblue;
+        }
+</style>

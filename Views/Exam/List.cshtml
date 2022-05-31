@@ -1,0 +1,42 @@
+﻿@model IEnumerable<KonusarakOgren.Dtos.ExamDto>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>All Exam</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.dateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamTitle)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExamTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.dateTime)
+                </td>
+                <td>
+                    @if (Context.Session.GetString("status")=="student")
+                    {
+                    <a href="/Exam/Start?id=@item.ExamId">Open Exam</a>   }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

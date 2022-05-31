@@ -1,0 +1,252 @@
+﻿@model KonusarakOgren.Models.Exam
+@{
+    ViewData["Title"] = "Exam";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<h1>Exam</h1>
+<div id="title">
+    @Model.ExamTitle
+
+</div>
+<div style="text-align:right;">
+    <strong>@Model.dateTime.ToShortTimeString()</strong>
+</div>
+<div id="paragraphs">
+    @Model.ExamParagraph
+</div>
+
+<div id="questions container">
+    <div class="row">
+        
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+        <div class="col-sm-5" style="margin-top:20px;margin-left:50px">
+           
+            <div> @Model.Questions[i].question</div>
+
+            <div class="btn-group btnGroup" id="group_@Model.Questions[i].QuestionId">
+                <div class="que">
+                    <strong>A</strong>
+                    <button class="btnOpt" id="@Model.Questions[i].QuestionId" value="A">  @Model.Questions[i].A</button>
+                </div>
+                <div class="que">
+                    <strong>B</strong>
+                    <button class=" btnOpt" id="@Model.Questions[i].QuestionId" value="B">  @Model.Questions[i].B</button>
+                </div>
+                <div class="que">
+                    <strong>C</strong>
+                    <button class=" btnOpt" id="@Model.Questions[i].QuestionId" value="C"> @Model.Questions[i].C</button>
+                </div>
+                <div class="que">
+                    <strong>D</strong>
+                    <button class=" btnOpt" id="@Model.Questions[i].QuestionId" value="D">   @Model.Questions[i].D</button>
+                </div> </div>
+        </div>
+        }
+    </div>
+</div>
+<div style="width:100%;text-align:center">
+    <button type="submit" class="btnFinishExam" id="finish" value="FINISH" onclick="theEND(@Model.ExamId);">FINISH EXAM</button>
+</div>
+
+
+<script>
+
+    class Ques_Ans {
+        constructor(Qid, Ans) {
+            this.Qid = Qid;
+            this.Ans = Ans;
+        }
+    }
+    var answers = new Array();
+    var examId;
+
+    var finish = document.getElementById("finish");
+    var btn = document.getElementsByClassName("btnOpt");
+
+    var k;
+    for (var i = 0; i < btn.length; i++) {
+        btn[i].addEventListener("click", function () {
+            var say = 0;
+            var id = this.id;
+            if (answers.length > 0) {
+                for (var i = 0; i < answers.length; i++) {
+                    if (id == answers[i].Qid) {
+                        say = say + 1;
+                        k = i;
+                        break;
+                    }
+                }
+
+                if (say < 1) {
+                    var Q = new Ques_Ans(id, this.value);
+                    answers.push(Q);
+                }
+                else {
+                    answers[k].Ans = this.value;
+                }
+            }
+            else {
+                var Q = new Ques_Ans(id, this.value);
+                answers.push(Q);
+            }
+            temizle(id);
+            this.style.backgroundColor = "darkgrey";
+        });
+        btn[i].addEventListener("mouseover", function () {
+            if (this.style.backgroundColor != "darkgrey")
+                this.style.backgroundColor = "green";
+        });
+        btn[i].addEventListener("mouseleave", function () {
+            if (this.style.backgroundColor != "darkgrey")
+                this.style.backgroundColor = "white";
+        });
+    }
+    function temizle(id) {
+        var buttons = document.querySelectorAll("#group_" + id + " .btnOpt");
+        for (var i = 0; i < buttons.length; i++) {
+
+            buttons[i].style.backgroundColor = "white";
+            buttons[i].className = "btnOpt";
+        }
+    }
+
+    function theEND(examId) {
+        var totalTrue;
+        var totalFalse;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let result = JSON.parse(xhr.responseText);
+                let dizi = Array.from(result);
+                var totalTrue = 0;
+                var totalFalse = 0;
+                for (let i = 0; i < dizi.length; i++) {
+
+                    for (var j = 0; j < answers.length; j++) {
+                        if (answers[j].Qid == dizi[i].questionId) {
+                            console.log(dizi[i].answer + " " + dizi[i].questionId);
+                            console.log(answers[j].Ans + " " + answers[j].Qid);
+                            if (dizi[i].answer == answers[j].Ans) {
+                                var btn = document.querySelectorAll("#group_" + dizi[i].questionId + " .btnOpt");
+                                for (var k = 0; k < btn.length; k++) {
+                                    if (btn[k].style.backgroundColor == "darkgrey" && btn[k].value == dizi[i].answer) {
+                                        btn[k].style.backgroundColor = "blue";
+                                    }
+                                }
+                                totalTrue++;
+                            }
+                            else {
+                                var btn = document.querySelectorAll("#group_" + dizi[i].questionId + " .btnOpt");
+                                for (var k = 0; k < btn.length; k++) {
+                                    if (btn[k].style.backgroundColor != "darkgrey" && btn[k].value == dizi[i].answer) {
+                                        btn[k].style.backgroundColor = "green";
+                                    }
+                                }
+                                totalFalse++;
+                            }
+                        }
+                    }
+                   
+                }
+                var buttons = document.getElementsByTagName("button");
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+                }
+                var xhr2 = new XMLHttpRequest();
+                xhr2.open("POST", "/Exam/ExamFinished?totalTrue=" + totalTrue + "&totalFalse=" + totalFalse + "&examId=" + examId + "&totalQuestion=4", true);
+                xhr2.send();
+
+                swal({
+                    title: totalTrue > 2 ? "GEÇTİN" : "KALDIN",
+                    text: totalTrue > 2 ? "Tebrikler" : "İyi Çalış",
+                    icon: totalTrue > 2 ? "success" : "error",
+                    button: "Siteye devam et",
+
+                })
+                    .then((value) => {
+                        window.location.href = "/Page/Index";
+                    });
+            }
+        }
+        xhr.open("GET", "/Exam/Finish?id=" + examId, true);
+        xhr.send();
+    }
+ 
+
+</script>
+<style>
+    .que {
+       display:grid;
+       grid-template-columns:20% 80%;
+    }
+    #paragraphs {
+        border: 3px solid black;
+        width: 100%;
+        min-height: 130px;
+        height: max-content;
+        font-size: 12pt;
+        margin: 30px auto;
+    }
+
+    #questions {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+
+    .left {
+        display: grid;
+        grid-template-rows: 50% 50%;
+        margin-top: 80px
+    }
+
+    #title {
+        font-weight: bold;
+        font-size: 24pt;
+        text-align: center;
+    }
+
+    .btnGroup {
+        width: 45%;
+        display: grid;
+        grid-template-rows: 20% 20% 20% 20%;
+        margin: 50px auto 20px 10px ;
+    }
+
+    .btnFinishExam {
+        width: 40%;
+        height: 60px;
+        margin-top: 60px;
+        border: 0px;
+        background-color: whitesmoke;
+        color: black;
+        font-weight: bold;
+    }
+
+        .btnFinishExam:hover {
+            background-color: chartreuse;
+        }
+
+    .btnOpt {
+        width: 100%;
+        background-color: white;
+        transition: all ease-in-out;
+    }
+
+
+    .btnCreateExam {
+        width: 40%;
+        height: 60px;
+        margin-top: 20px;
+        border: 0px;
+        background-color: whitesmoke;
+        color: black;
+        font-weight: bold;
+    }
+
+        .btnCreateExam:hover {
+            background-color: cornflowerblue;
+        }
+</style>
